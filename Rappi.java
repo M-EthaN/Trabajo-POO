@@ -1,4 +1,5 @@
-// Clase Producto
+import java.util.Scanner;
+
 class Producto {
     private String nombre;
     private double precio;
@@ -8,14 +9,14 @@ class Producto {
         this.precio = precio;
     }
 
-    public void mostrarInfo() {
-        // Mostrar información del producto
-    }
+    public String getNombre() { return nombre; }
+    public double getPrecio() { return precio; }
 
-    // Getters y setters
+    public void mostrarInfo() {
+        System.out.println("Producto: " + nombre + " | Precio: S/ " + precio);
+    }
 }
 
-// Clase Vendedor
 class Vendedor {
     private String nombre;
 
@@ -24,12 +25,10 @@ class Vendedor {
     }
 
     public Producto crearProducto(String nombre, double precio) {
-        // Retorna un nuevo producto
-        return null;
+        return new Producto(nombre, precio);
     }
 }
 
-// Clase Comprador
 class Comprador {
     private String nombre;
 
@@ -38,12 +37,14 @@ class Comprador {
     }
 
     public Pedido hacerPedido(Producto producto, String direccionEntrega) {
-        // Retorna un nuevo pedido con el producto elegido
-        return null;
+        return new Pedido(this, producto, direccionEntrega);
+    }
+
+    public String getNombre() {
+        return nombre;
     }
 }
 
-// Clase Pedido
 class Pedido {
     private Comprador comprador;
     private Producto producto;
@@ -56,11 +57,13 @@ class Pedido {
     }
 
     public void mostrarInfo() {
-        // Mostrar detalles del pedido
+        System.out.println("Pedido de " + comprador.getNombre() +
+                " | Producto: " + producto.getNombre() +
+                " | Precio: S/ " + producto.getPrecio() +
+                " | Dirección: " + direccionEntrega);
     }
 }
 
-// Clase Repartidor
 class Repartidor {
     private String nombre;
 
@@ -69,44 +72,57 @@ class Repartidor {
     }
 
     public void entregarPedido(Pedido pedido) {
-        // Simula entrega del pedido
+        System.out.println("El repartidor " + nombre + " está entregando el pedido...");
+        System.out.println("✅ Pedido entregado con éxito.");
     }
 }
 
-// Clase Rappi (gestiona pedidos y repartidores)
 class Rappi {
     public void recibirPedido(Pedido pedido) {
-        // Guardar pedido
+        System.out.println("📦 Pedido recibido en Rappi:");
+        pedido.mostrarInfo();
     }
 
     public void asignarRepartidor(Pedido pedido, Repartidor repartidor) {
-        // Asignar pedido a un repartidor
-    }
-}
-
-// Clase principal
-public class Main {
-    public static void main(String[] args) {
-        // Crear vendedor y producto
-        Vendedor vendedor = new Vendedor("Restaurante Don Pepe");
-        Producto producto = vendedor.crearProducto("Hamburguesa doble", 20.0);
-
-        // Crear comprador
-        Comprador comprador = new Comprador("Laura");
-
-        // Comprador hace pedido
-        Pedido pedido = comprador.hacerPedido(producto, "Av. Principal 456");
-
-        // Crear repartidor y Rappi
-        Repartidor repartidor = new Repartidor("Carlos");
-        Rappi rappi = new Rappi();
-
-        // Rappi gestiona pedido
-        rappi.recibirPedido(pedido);
-        rappi.asignarRepartidor(pedido, repartidor);
-
-        // Repartidor entrega pedido
+        System.out.println("🚴 Asignando repartidor...");
         repartidor.entregarPedido(pedido);
     }
 }
 
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Crear vendedor
+        System.out.print("Ingrese el nombre del vendedor: ");
+        Vendedor vendedor = new Vendedor(sc.nextLine());
+
+        // Crear producto
+        System.out.print("Ingrese el nombre del producto: ");
+        String nombreProd = sc.nextLine();
+        System.out.print("Ingrese el precio del producto: ");
+        double precioProd = sc.nextDouble();
+        sc.nextLine(); // limpiar buffer
+        Producto producto = vendedor.crearProducto(nombreProd, precioProd);
+
+        // Crear comprador
+        System.out.print("Ingrese el nombre del comprador: ");
+        Comprador comprador = new Comprador(sc.nextLine());
+
+        // Crear pedido
+        System.out.print("Ingrese la dirección de entrega: ");
+        String direccion = sc.nextLine();
+        Pedido pedido = comprador.hacerPedido(producto, direccion);
+
+        // Crear repartidor
+        System.out.print("Ingrese el nombre del repartidor: ");
+        Repartidor repartidor = new Repartidor(sc.nextLine());
+
+        // Gestionar pedido en Rappi
+        Rappi rappi = new Rappi();
+        rappi.recibirPedido(pedido);
+        rappi.asignarRepartidor(pedido, repartidor);
+
+        sc.close();
+    }
+}
